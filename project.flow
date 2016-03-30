@@ -1,0 +1,25 @@
+{
+
+  project : {
+    name : 'Territory',
+    version : '1.0.0',
+    author : '@5Mixer',
+
+    app : {
+      name : 'territory',
+      package : 'com.5mixer.territory'
+    },
+
+    build : {
+      dependencies : {
+        luxe : '*',
+      }
+    },
+
+    files : {
+      assets : 'assets/'
+    }
+
+  }
+
+}
