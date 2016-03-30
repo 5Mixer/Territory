@@ -28,6 +28,8 @@ class Chunk extends Visual{
 	var tiles_wide:Int = 8;
 	var tiles_high:Int = 8;
 
+	public var dirty = false;
+
     var map_tiles : Array< Array<MapTile> >;
 
 
@@ -72,8 +74,8 @@ class Chunk extends Visual{
                 var map_x = _x * tilew;
                 var map_y = _y * tilew;
                 var _quad = geom.quad_add({x:map_x*2, y:map_y*2, w:tilew*2, h:tilew*2});
-                var _tilex = random_int(4);
-                var _tiley = random_int(2);
+                var _tilex = 4;//random_int(4);
+                var _tiley = 1;//random_int(2);
 
                 geom.quad_uv(_quad, new Rectangle((_tilex * tilew),(_tiley * tilew), tilew, tilew) );
 
@@ -93,5 +95,15 @@ class Chunk extends Visual{
 		if (x >= tiles_wide || y >= tiles_high || x<0 || y<0) return;
 
 		geom.quad_uv( map_tiles[y][x].quad, new Rectangle( uv_x*8, uv_y*8, 8, 8));
+	}
+	public function clear () {
+		
+		if (!dirty) return;
+		dirty = false;
+		for(x in 0 ... tiles_wide) {
+            for(y in 0 ... tiles_high) {
+				set_tile(x,y,0);
+			}
+		}
 	}
 }
