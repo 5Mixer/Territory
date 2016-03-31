@@ -72,7 +72,10 @@ class Layer {
 		var localx = x % 8;
 		var localy = y % 8;
 
-		return get_chunk({x:chunkx, y:chunky}).get_tile(localx,localy);
+		var chunk:Chunk = get_chunk({x:chunkx, y:chunky});
+		if (chunk == null) return null;
+
+		return chunk.get_tile(localx,localy);
 	}
 
 	public function set_tile(x:Int,y:Int,tile:Int){

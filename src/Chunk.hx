@@ -101,7 +101,7 @@ class Chunk extends Visual{
 	}
 
 	public function clear () {
-		//Clear does NOT effect the array. Next REFRESH will bring it all back!!
+		//Clear does NOT effect the array. Next REFRESH will reflect this visually!
 		for(x in 0 ... tiles_wide) {
 			for(y in 0 ... tiles_high) {
 				set_tile(x,y,0);

@@ -5,29 +5,42 @@ import luxe.Input;
 class KeyControls extends luxe.Component{
 	var sprite : Player;
 	var layer:Layer;
-	public function new (_layer:Layer){
+	var collisionLayer:Layer;
+	public function new (_layer:Layer,collisions:Layer){
 		super();
 		layer = _layer;
+		collisionLayer = collisions;
 	}
 
 	override function init() {
 	    sprite = cast entity;
 	}
 	override function onkeyup( e:KeyEvent ) {
-		trace(layer.get_tile(sprite.x, sprite.y).tile);
+		trace(collisionLayer.get_tile(sprite.x, sprite.y).tile);
+
+		var futurex = sprite.x;
+		var futurey = sprite.y;
+
         if(e.keycode == Key.key_w) {
-			if ([2,3,21,22].indexOf(layer.get_tile(sprite.x, sprite.y-1).tile) != -1)
-            	sprite.y--;
+        	futurey--;
         }
 
 		if(e.keycode == Key.key_a) {
-            sprite.x--;
+        	futurex--;
         }
 		if(e.keycode == Key.key_s) {
-            sprite.y++;
+        	futurey++;
         }
 		if(e.keycode == Key.key_d) {
-            sprite.x++;
+        	futurex++;
         }
+
+		var futureTile = collisionLayer.get_tile(futurex, futurey);
+		if (futureTile == null) return; //Can't move to a tile if it is null!!
+
+		if (TileData.isCollidable(futureTile.tile) == false){
+			sprite.x = futurex;
+			sprite.y = futurey;
+		}
     } //onkeyu
 }
