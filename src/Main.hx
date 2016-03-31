@@ -11,6 +11,10 @@ class Main extends luxe.Game {
     override function config(config:luxe.AppConfig) {
 
         config.preload.textures.push({ id:'assets/tileset.png' });
+        config.preload.jsons = [
+            { id:'assets/Level.json' }
+        ];
+
 
         return config;
 

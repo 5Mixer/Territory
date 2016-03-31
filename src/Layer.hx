@@ -43,6 +43,17 @@ class Layer {
 			chunk.clear();
 	}
 
+	public function load (data:Array<Array<Int>>){
+		var w = data.length;
+		var h = data[0].length;
+		trace('Loading data, with w: $w and h: $h');
+		for (x in 0...w){
+			for (y in 0...h){
+				set_tile(x,y,data[x][y]);
+			}
+		}
+	}
+
 	public function set_tile(x:Int,y:Int,tile:Int){
 		//Find the chunk it's in and call it's set_tile method.
 		var chunkx = Math.floor(x / 8); //chunks are 8x8, get the chunk it's in.
@@ -54,9 +65,10 @@ class Layer {
 
 		var chunk = get_chunk({x:chunkx, y:chunky});
 
+		//trace('Setting tile id $tile to be at world $x, $y. Chunk $chunkx, $chunky. Locally, $localx, $localy');
+
 		if (chunk != null){
 			chunk.set_tile(localx,localy,tile);
-			chunk.dirty = true;
 		}
 	}
 }

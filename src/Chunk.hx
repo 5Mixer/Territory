@@ -98,8 +98,6 @@ class Chunk extends Visual{
 	}
 	public function clear () {
 		
-		if (!dirty) return;
-		dirty = false;
 		for(x in 0 ... tiles_wide) {
             for(y in 0 ... tiles_high) {
 				set_tile(x,y,0);
