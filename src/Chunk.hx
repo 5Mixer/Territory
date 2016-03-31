@@ -10,7 +10,8 @@ typedef ChunkRegion = {
 	y : Int
 }
 
-typedef MapTile = {
+typedef MapTile = { //Stores both geom data, and tile data. Tile == geom when refresh() is called.
+	tile : Int,
     quad : Int,
     tilex : Int,
     tiley : Int
@@ -28,7 +29,7 @@ class Chunk extends Visual{
 	var tiles_wide:Int = 8;
 	var tiles_high:Int = 8;
 
-	public var dirty = false;
+	public var needsRefreshing = false;
 
     var map_tiles : Array< Array<MapTile> >;
 
@@ -79,29 +80,57 @@ class Chunk extends Visual{
 
                 geom.quad_uv(_quad, new Rectangle((_tilex * tilew),(_tiley * tilew), tilew, tilew) );
 
-                _row.push( { quad:_quad, tilex:_tilex, tiley:_tiley } );
+                _row.push( { quad:_quad, tilex:_tilex, tiley:_tiley, tile: 15 } );
 
             } //_x
             map_tiles.push(_row);
         } //_y
     } //create_map
 
-	public function set_tile(x:Int,y:Int,tile:Int){
-		tile--;
-
-		var uv_x = tile % 10;
-        var uv_y = Math.floor(tile / 10);
+	public function set_tile(x:Int,y:Int,tile:Int,flagNeedsRefreshing = true){
 
 		if (x >= tiles_wide || y >= tiles_high || x<0 || y<0) return;
+		if (map_tiles[x][y].tile == tile) return;
+		map_tiles[x][y].tile = tile;
 
-		geom.quad_uv( map_tiles[y][x].quad, new Rectangle( uv_x*8, uv_y*8, 8, 8));
+		if (flagNeedsRefreshing) needsRefreshing = true;
 	}
+
+	inline public function get_tile(x:Int,y:Int){
+		return map_tiles[x][y];
+	}
+
 	public function clear () {
-		
+		//Clear does NOT effect the array. Next REFRESH will bring it all back!!
 		for(x in 0 ... tiles_wide) {
-            for(y in 0 ... tiles_high) {
+			for(y in 0 ... tiles_high) {
 				set_tile(x,y,0);
 			}
+		}
+	}
+
+	//Loads tiles from array.
+	public function refresh () {
+		if (needsRefreshing == true){
+			needsRefreshing = false;
+
+			geom.locked = false;
+
+			for(x in 0 ... tiles_wide) {
+	            for(y in 0 ... tiles_high) {
+					var tile = map_tiles[x][y].tile;
+					tile--;
+
+					needsRefreshing = false;
+
+					var uv_x = tile % 10;
+			        var uv_y = Math.floor(tile / 10);
+
+					geom.quad_uv( map_tiles[y][x].quad, new Rectangle( uv_x*8, uv_y*8, 8, 8));
+				}
+			}
+			geom.locked = true;
+
 		}
 	}
 }

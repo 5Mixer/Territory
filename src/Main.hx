@@ -12,7 +12,8 @@ class Main extends luxe.Game {
 
         config.preload.textures.push({ id:'assets/tileset.png' });
         config.preload.jsons = [
-            { id:'assets/Level.json' }
+            { id:'assets/Level.json'},
+            {id:'assets/Structures/Buildings/Standard1.json'}
         ];
 
 
@@ -23,6 +24,8 @@ class Main extends luxe.Game {
     override function ready() {
         map = new WorldMap();
         var player = new Player(map.layers.get("fg"));
+
+        new FPS();
 
         Luxe.input.bind_key('left', Key.left);
         Luxe.input.bind_key('left', Key.key_a);

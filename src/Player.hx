@@ -11,7 +11,7 @@ class Player extends Entity implements IRenderable {
 		super({name:"Player"});
 		layer.renderables.push(this);
 
-		add(new KeyControls());
+		add(new KeyControls(layer));
 	}
 
 	public function render(layer:Layer):Void {

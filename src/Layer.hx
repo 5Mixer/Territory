@@ -28,6 +28,7 @@ class Layer {
 		for (renderable in renderables){
 			renderable.render(this);
 		}
+		refresh();
 	}
 
 	//:TODO: This is probably slow and a bad way of doing stuff.
@@ -38,20 +39,40 @@ class Layer {
 		}
 		return null;
 	}
+
+	//Clear just clears the array. Next refresh() applies this visually.
 	public function clear (){
 		for (chunk in chunks)
 			chunk.clear();
 	}
 
-	public function load (data:Array<Array<Int>>){
+	//Refresh makes the quads reflects reflect their tile id's.
+	public function refresh (){
+		for (chunk in chunks)
+			chunk.refresh();
+	}
+
+
+	public function load (data:Array<Array<Int>>,offsetx,offsety){
 		var w = data.length;
 		var h = data[0].length;
-		trace('Loading data, with w: $w and h: $h');
 		for (x in 0...w){
 			for (y in 0...h){
-				set_tile(x,y,data[x][y]);
+				set_tile(x+offsetx,y+offsety,data[x][y]);
 			}
 		}
+		refresh();
+	}
+
+	public function get_tile(x:Int, y:Int){
+		var chunkx = Math.floor(x / 8); //chunks are 8x8, get the chunk it's in.
+		var chunky = Math.floor(y / 8);
+
+		//Translate world coords to local coords.
+		var localx = x % 8;
+		var localy = y % 8;
+
+		return get_chunk({x:chunkx, y:chunky}).get_tile(localx,localy);
 	}
 
 	public function set_tile(x:Int,y:Int,tile:Int){
