@@ -114,7 +114,6 @@ class Chunk extends Visual{
 		if (needsRefreshing == true){
 			needsRefreshing = false;
 
-			geom.locked = false;
 
 			for(x in 0 ... tiles_wide) {
 	            for(y in 0 ... tiles_high) {
@@ -129,7 +128,6 @@ class Chunk extends Visual{
 					geom.quad_uv( map_tiles[y][x].quad, new Rectangle( uv_x*8, uv_y*8, 8, 8));
 				}
 			}
-			geom.locked = true;
 
 		}
 	}
