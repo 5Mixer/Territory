@@ -26,8 +26,13 @@ class Chunk extends Visual{
     var mapw : Int = 60;
     var maph : Int = 40;
 
+	//Quantity of tiles wide and high in a single chunk.
 	var tiles_wide:Int = 8;
 	var tiles_high:Int = 8;
+
+	//Size of the tiles
+	var tile_width:Int = 32;
+	var tile_height:Int = 32;
 
 	public var needsRefreshing = false;
 
@@ -36,11 +41,14 @@ class Chunk extends Visual{
 
 	public function new (location:ChunkRegion){
 		geom = new phoenix.geometry.QuadPackGeometry({
-            texture : Luxe.resources.texture('assets/tileset.png'),
+            texture : Luxe.resources.texture('assets/TilesetVector.png'),
             batcher : Luxe.renderer.batcher
         });
 
 		geom.texture.filter_min = geom.texture.filter_mag = phoenix.Texture.FilterType.nearest;
+
+		tile_width = Math.floor(geom.texture.width/10);
+		tile_height = Math.floor(geom.texture.height/10);
 
         create_map();
 
@@ -49,12 +57,12 @@ class Chunk extends Visual{
 		super({geometry:geom});
 
 
-		pos.x = location.x * tiles_wide * 16;
-		pos.y = location.y * tiles_high * 16;
+		pos.x = location.x * tiles_wide * 32; //Tiles are rendered double size, and so this is 16, not 8.
+		pos.y = location.y * tiles_high * 32;
 
 	}
 
-	function random_int( max:Int ) {
+	inline function random_int( max:Int ) {
 
         return Math.floor(max*Math.random());
 
@@ -64,21 +72,20 @@ class Chunk extends Visual{
 
         map_tiles = new Array< Array<MapTile> >();
 
-        var tilew = 8;
-        var tilecx : Int = tiles_wide; //= Std.int(Luxe.screen.w / tilew/10);
-        var tilecy : Int = tiles_high; //= Std.int(Luxe.screen.h / tilew/10);
+        var tilecx = tiles_wide; //Number of tile sprites horizontally in the chunk.
+        var tilecy = tiles_high; //Number of tile sprites vertically in this chunk.
 
         for(_y in 0 ... tilecy) {
             var _row = new Array<MapTile>();
             for(_x in 0 ... tilecx) {
 
-                var map_x = _x * tilew;
-                var map_y = _y * tilew;
-                var _quad = geom.quad_add({x:map_x*2, y:map_y*2, w:tilew*2, h:tilew*2});
+                var map_x = _x * 32;
+                var map_y = _y * 32;
+                var _quad = geom.quad_add({x:map_x, y:map_y, w:8*4, h:8*4});
                 var _tilex = 4;//random_int(4);
                 var _tiley = 1;//random_int(2);
 
-                geom.quad_uv(_quad, new Rectangle((_tilex * tilew),(_tiley * tilew), tilew, tilew) );
+                geom.quad_uv(_quad, new Rectangle((_tilex * tile_width),(_tiley * tile_height), tile_width, tile_height) );
 
                 _row.push( { quad:_quad, tilex:_tilex, tiley:_tiley, tile: 15 } );
 
@@ -125,7 +132,7 @@ class Chunk extends Visual{
 					var uv_x = tile % 10;
 			        var uv_y = Math.floor(tile / 10);
 
-					geom.quad_uv( map_tiles[y][x].quad, new Rectangle( uv_x*8, uv_y*8, 8, 8));
+					geom.quad_uv( map_tiles[y][x].quad, new Rectangle( uv_x*tile_width, uv_y*tile_height, tile_width, tile_height));
 				}
 			}
 
